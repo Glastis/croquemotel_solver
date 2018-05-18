@@ -16,11 +16,13 @@ local menu = require('menu')
 local grid
 local sprite
 local menu_list
+local tmp_menu
+local tmp_retval
 
 function love.load()
     menu_open = false
     love.window.setMode(constant.WINDOW_SIZE_X, constant.WINDOW_SIZE_Y, {resizable=constant.WINDOW_RESIZABLE, vsync=constant.WINDOW_VSYNC})
-
+    love.window.setTitle(constant.TITLE_LABEL)
     sprite = {}
     sprite.room = {}
     sprite.room[constant.ROOM_0] = love.graphics.newImage(constant.ROOM_0_SPRITE_PATH)
@@ -39,20 +41,25 @@ function love.load()
 
     grid = map.create()
     map.draw(grid, sprite)
-    menu_list = {}
+    menu_list = menu.create_menu_bar()
 end
 
 function love.draw()
     map.draw(grid, sprite)
+    menu.draw(menu_list)
 end
 
 function love.mousepressed(x, y, button)
     print('x = ' .. tostring(x))
     print('y = ' .. tostring(y))
     print('button = ' .. tostring(button))
-    if menu.is_in_menu(menu_list, x, y) then
-
-    else
+    tmp_menu = menu.is_in_menu(menu_list, x, y)
+    if tmp_menu then
+        tmp_retval = tmp_menu.callback(grid)
+        if tmp_retval then
+            grid = tmp_retval
+        end
+    elseif x >= constant.OFFSET_X and y >= constant.OFFSET_Y then
         map.shift_room(grid, x, y)
     end
 end

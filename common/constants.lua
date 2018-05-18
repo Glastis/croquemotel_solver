@@ -9,7 +9,7 @@ local constant
 constant = {}
 
 constant.OFFSET_X = 0
-constant.OFFSET_Y = 0
+constant.OFFSET_Y = 25
 constant.MAX_ROOM_X = 8
 constant.MAX_ROOM_Y = 6
 constant.ROOM_SIZE_X = 100
@@ -50,9 +50,12 @@ constant.MONSTER_5_SPRITE_PATH = 'assets/monsters/plant.png'
 constant.MONSTER_6_SPRITE_PATH = 'assets/monsters/witch.png'
 constant.MONSTER_7_SPRITE_PATH = 'assets/monsters/zombie.png'
 
-constant.WINDOW_SIZE_X = constant.ROOM_SIZE_X * constant.MAX_ROOM_X
-constant.WINDOW_SIZE_Y = constant.ROOM_SIZE_Y * constant.MAX_ROOM_Y
-
+constant.WINDOW_SIZE_X = (constant.ROOM_SIZE_X * constant.MAX_ROOM_X) + constant.OFFSET_X
+constant.WINDOW_SIZE_Y = (constant.ROOM_SIZE_Y * constant.MAX_ROOM_Y) + constant.OFFSET_Y
+constant.TITLE_LABEL = 'CroqueMotel Solver'
 constant.WINDOW_RESIZABLE = false
 constant.WINDOW_VSYNC = false
+
+constant.SAVE_FILENAME = 'hotel.sav'
+
 return constant
