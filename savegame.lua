@@ -15,7 +15,7 @@ local function open()
     local tmp
     local data
 
-    data, tmp = table.load(data, constant.SAVE_FILENAME)
+    data, tmp = table.load(constant.SAVE_FILENAME)
     if tmp then
         print(tmp)
     else
