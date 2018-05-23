@@ -40,40 +40,60 @@ local function draw(menu_list)
 end
 menu.draw = draw
 
+local function add_menu_to_bar(menu_list, label, callback)
+    local menu_item
+
+    menu_item = {}
+    menu_item.label = label
+    menu_item.callback = callback
+    if not menu_list[1] then
+        menu_item.xmin = 0
+    else
+        menu_item.xmin = menu_list[#menu_list].xmax + 1
+    end
+    menu_item.xmax = (#label * 10) + menu_item.xmin
+    menu_item.ymin = 0
+    menu_item.ymax = constant.OFFSET_Y
+    menu_list[#menu_list + 1] = menu_item
+end
+menu.add_menu_to_bar = add_menu_to_bar
+
+local function shift_menu_bar_items(menu_list, from)
+    while menu_list[from] and menu_list[from + 1] do
+        if from == 1 then
+            menu_list[from + 1].xmin = 0
+        else
+            menu_list[from + 1].xmin = menu_list[from].xmin
+        end
+        menu_list[from] = menu_list[from + 1]
+        menu_list[from].xmax = (#menu_list[from].label * 10) + menu_list[from].xmin
+    end
+    menu_list[#menu_list] = nil
+end
+menu.shift_menu_bar_items = shift_menu_bar_items
+
+local function remove_menu_from_bar(menu_list, label)
+    local i
+
+    i = 1
+    while menu_list[i] do
+        if menu_list[i].label == label then
+            shift_menu_bar_items(menu_list, i)
+            return true
+        end
+        i = i + 1
+    end
+    return false
+end
+menu.remove_menu_from_bar = remove_menu_from_bar
+
 local function create_menu_bar()
     local menu_list
-    local tmp
 
     menu_list = {}
-
-    tmp = {}
-    tmp.xmin = 0
-    tmp.xmax = 40
-    tmp.ymin = 0
-    tmp.ymax = constant.OFFSET_Y
-    tmp.label = 'Open'
-    tmp.callback = savegame.open
-    menu_list[#menu_list + 1] = tmp
-
-    tmp = {}
-    tmp.xmin = 40
-    tmp.xmax = 80
-    tmp.ymin = 0
-    tmp.ymax = constant.OFFSET_Y
-    tmp.label = 'Save'
-    tmp.callback = savegame.save
-    menu_list[#menu_list + 1] = tmp
-
-    tmp = {}
-    tmp.xmin = 80
-    tmp.xmax = 130
-    tmp.ymin = 0
-    tmp.ymax = constant.OFFSET_Y
-    tmp.label = 'Solve'
-    tmp.callback = nil
-    print(tmp.xmin + (10 * #tmp.label))
-    menu_list[#menu_list + 1] = tmp
-
+    add_menu_to_bar(menu_list, 'Open', savegame.open)
+    add_menu_to_bar(menu_list, 'Save', savegame.save)
+    add_menu_to_bar(menu_list, 'Next', nil)
     return menu_list
 end
 menu.create_menu_bar = create_menu_bar
